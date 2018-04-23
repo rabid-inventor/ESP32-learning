@@ -1,12 +1,30 @@
 
 /* hearder for defining GAP datasets */
-
+#include "esp_system.h"
 #include "esp_bt.h"
 #include "esp_bt_main.h"
 #include "esp_gap_ble_api.h"
+#include "esp_bt_defs.h"
+
+#define MY_DEMO_TAG "BT demo Gee"
+
+#define TEST_DEVICE_NAME "DEV01"
+
+uint8_t dev_name[5] = TEST_DEVICE_NAME;
 
 
+typedef struct{
+	uint8_t 	device_name_len;
+	uint8_t		*p_device_name;
 
+}device_details_t;
+
+
+device_details_t my_device_details = {
+		.device_name_len = sizeof(dev_name),
+		.p_device_name = dev_name,
+
+};
 
 static uint8_t adv_service_uuid128[32] = {
     /* LSB <--------------------------------------------------------------------------------> MSB */

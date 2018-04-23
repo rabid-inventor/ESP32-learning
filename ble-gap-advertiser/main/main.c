@@ -1,20 +1,21 @@
 
+
+
+#include "ble_system.h"
+//#include "ble_config.h"
+#include "esp_gap_ble_api.h"
 #include "esp_system.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
-#include "esp_bt.h"
+//#include "esp_bt.h"
 #include "driver/uart.h"
 #include "string.h"
 #include "esp_bt.h"
 #include "esp_bt_main.h"
-#include "esp_bt_defs.h"
+
+
 #include "esp_gap_ble_api.h"
-#include "templates.h"
 
-
-#define MY_DEMO_TAG "BT demo Gee"
-
-#define TEST_DEVICE_NAME "TestDEV1"
 
 
 static uint8_t adv_config_done = 0;
@@ -23,33 +24,7 @@ static uint8_t adv_config_done = 0;
 
 
 // Initises Bluetooth controller 
-void init_bl(esp_bt_mode_t mode)
-	
-	{	
-		   /* Initialize NVS — it is used to store PHY calibration data */
-		esp_err_t ret = nvs_flash_init();
-		if (ret == ESP_ERR_NVS_NO_FREE_PAGES) {
-			ESP_ERROR_CHECK(nvs_flash_erase());
-			ret = nvs_flash_init();
-			}
-		
-		
-		ESP_ERROR_CHECK( ret );
-		ESP_LOGI(MY_DEMO_TAG, "BL controler enabling \n ");
-		
-		esp_bt_controller_enable(mode);
-		esp_bt_controller_config_t bl_cont_conf = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
-	
-		esp_bt_controller_init(&bl_cont_conf);
-	
-	
-		esp_bt_controller_enable(ESP_BT_MODE_BLE);
-	
-		ESP_LOGI(MY_DEMO_TAG, "Bluetooth controller running...\n");
 
-
-
-}
 
 //Handler for advertising 
 void gap_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param){
@@ -80,7 +55,17 @@ switch (event) {
          
 		 break;
 	case ESP_GAP_BLE_UPDATE_CONN_PARAMS_EVT:
+
+	       ESP_LOGI(MY_DEMO_TAG, "update connection params status = %d, min_int = %d, max_int = %d,conn_int = %d,latency = %d, timeout = %d",
+	                  param->update_conn_params.status,
+	                  param->update_conn_params.min_int,
+	                  param->update_conn_params.max_int,
+	                  param->update_conn_params.conn_int,
+	                  param->update_conn_params.latency,
+	                  param->update_conn_params.timeout);
+	       //esp_ble_gap_update_conn_params(&update_conn_params);
 		ESP_LOGI(MY_DEMO_TAG, "Set con params recieved need to do\n");
+	    //ESP_LOGI(MY_DEMO_TAG," event: %x params: %x /n", event , param);
 	    break;
     default:
 	    //ESP_LOGI(MY_DEMO_TAG," event: %x params: %x /n", event , param); 
@@ -90,35 +75,15 @@ switch (event) {
 }
 
 
+
+
 void app_main()
 	{
 	
-	init_bl(ESP_BT_MODE_BLE);
-	
+	ble_begin();
 	
 	//Initiase BlueTooth stack
 	
-	 esp_bluedroid_init();
-	 
-	 
-	 ESP_ERROR_CHECK(esp_bluedroid_enable());
-	 
-	 
-	 esp_bluedroid_status_t status;
-	 
-	 //Check Stack is up and running 
-	 status = esp_bluedroid_get_status();
-	 if( status == ESP_BLUEDROID_STATUS_ENABLED)
-	 {
-	 
-	 ESP_LOGI(MY_DEMO_TAG, "Bludroid enabled\n");
-	 
-	 }
-	 else 
-	 {
-	  ESP_LOGE(MY_DEMO_TAG, "Bludroid FAILLLLLLL\n");
-	 }
-	 
 	 
 	esp_err_t set_dev_name_ret = esp_ble_gap_set_device_name(TEST_DEVICE_NAME);
 	
