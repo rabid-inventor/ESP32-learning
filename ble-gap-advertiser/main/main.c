@@ -62,7 +62,10 @@ switch (event) {
 	                  param->update_conn_params.max_int,
 	                  param->update_conn_params.conn_int,
 	                  param->update_conn_params.latency,
-	                  param->update_conn_params.timeout);
+
+					  param->update_conn_params.timeout);
+	       conn_params_t new_connetion_params;
+
 	       //esp_ble_gap_update_conn_params(&update_conn_params);
 		ESP_LOGI(MY_DEMO_TAG, "Set con params recieved need to do\n");
 	    //ESP_LOGI(MY_DEMO_TAG," event: %x params: %x /n", event , param);
@@ -84,7 +87,8 @@ void app_main()
 	
 	//Initiase BlueTooth stack
 	
-	 
+	ESP_BLUEDROID_STATUS_CHECK(ESP_BT_STATUS_DONE)
+
 	esp_err_t set_dev_name_ret = esp_ble_gap_set_device_name(TEST_DEVICE_NAME);
 	
 	if (set_dev_name_ret){
